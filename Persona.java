@@ -30,12 +30,8 @@ public class Persona extends Thread {
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
-        try {
-            grupo.pedirHelado(nombre,  helado);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        
+        grupo.pedirHelado(nombre,  helado);
         grupo.pagarHelado(nombre);
     }
 

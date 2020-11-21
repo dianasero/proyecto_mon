@@ -31,13 +31,13 @@ public class Grupo {
 
     synchronized public void pedirHelado(int nombre, String sabor){
         if(!isGrupoPedido()){
-            while (!isGrupoPedido()){//Ya terminaron todos de pedir y de pagar
-                if(integrantes[nombre].isPedido()){
+            while(!isGrupoPedido()){
+                while(integrantes[nombre].isPedido()){
                     try{
                         wait();
                     }catch (InterruptedException e) {System.err.println(e.getMessage());}
-                } 
-                if(!integrantes[nombre].isPedido()){
+                }
+                while(!integrantes[nombre].isPedido()){
                     try{
                         mostradorPersona.acquire();
                         mostrador.pedirHelado(nombre, sabor, this.nombre);
@@ -46,7 +46,8 @@ public class Grupo {
                         e.printStackTrace();
                     }
                     mostradorPersona.release();
-                }
+                    System.out.println("xxxxxxxxxxxxxxxxxxxxxxxx");
+                } 
             }
         }else{
             notifyAll();//Puede ser una u otra;
@@ -57,13 +58,13 @@ public class Grupo {
     }
     synchronized public void pagarHelado(int nombre){
         if(!isGrupoTerminado()){
-            while (!isGrupoTerminado()){//Ya terminaron todos de pedir y de pagar
-                if(integrantes[nombre].isPagado()){
+            while(!isGrupoTerminado()){
+                while(integrantes[nombre].isPagado()){
                     try{
                         wait();
                     }catch (InterruptedException e) {System.err.println(e.getMessage());}
-                } 
-                if(!integrantes[nombre].isPagado()){
+                }
+                while(!integrantes[nombre].isPagado()){
                     try{
                         cajaPersona.acquire();
                         caja.pagarHelado(nombre, this.nombre);
@@ -72,7 +73,8 @@ public class Grupo {
                         e.printStackTrace();
                     }
                     cajaPersona.release();
-                }
+                    System.out.println("xxxxxxxxxxxxxxxxxxxxxxxx");
+                } 
             }
         }
         else{
