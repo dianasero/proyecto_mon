@@ -93,12 +93,15 @@ public class Heladeria{
 
         Queue<Grupo> colaGrupo;
         colaGrupo = new LinkedList();
-        colaGrupo.add(new Grupo(3, 0, caja, mostrador));
-        // colaGrupo.add(new Grupo(3, 2, caja, mostrador));
+        colaGrupo.add(new Grupo(4, 0, caja, mostrador));
+        colaGrupo.add(new Grupo(3, 1, caja, mostrador));
         // colaGrupo.add(new Grupo(3, 3, caja, mostrador));
 
         for(int i = 0; i < colaGrupo.size(); i++){
-            colaGrupo.poll().ejecutarPersonas();;
+            Grupo actual;
+            actual = colaGrupo.poll();
+            actual.setGrupo(actual);
+            actual.ejecutarPersonas();
         }
     }
 }

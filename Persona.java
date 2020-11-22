@@ -1,4 +1,7 @@
 import java.util.concurrent.Semaphore;
+
+import javax.print.DocFlavor.INPUT_STREAM;
+
 import java.util.Random;
 
 public class Persona extends Thread {
@@ -8,9 +11,11 @@ public class Persona extends Thread {
     private boolean pagado;
     private Mostrador mostrador;
     private Grupo grupo;
-   
+    static Semaphore get = new Semaphore(1);
+    static Semaphore pay = new Semaphore(1);
 
-    public Persona(int nombre, Mostrador mostrador, Grupo grupo) {
+
+    public Persona(int nombre, Mostrador mostrador) {
         this.mostrador = mostrador;
         this.nombre = nombre;
         this.pedido = false;
@@ -30,11 +35,33 @@ public class Persona extends Thread {
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
+        while(!grupo.isGrupoTerminado()){
+            try {
+                get.acquire();
+                grupo.pedirHelado(nombre, helado);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //
+            if(grupo.isGrupoPedido())
+                try{
+                    pay.acquire();
+                    grupo.pagarHelado(nombre);
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+        }
         
-        grupo.pedirHelado(nombre,  helado);
-        grupo.pagarHelado(nombre);
     }
+    public void regresarSemPay(){
+        pay.release();
+    }
+    public void regresarSemGet(){
+        System.out.println(get.toString() + nombre);
+        get.release();
+        System.out.println(get.toString() + nombre);
 
+    }
     public String elegirHelado(String [] sabores,int num){
         return sabores[num];
     }
@@ -51,5 +78,8 @@ public class Persona extends Thread {
     }
     public void setPagado (boolean pagado){
         this.pagado = pagado;
+    }
+    public void setGrupo(Grupo grupo){
+        this.grupo = grupo;
     }
 }
